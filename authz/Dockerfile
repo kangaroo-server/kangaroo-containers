@@ -14,5 +14,5 @@ WORKDIR /root
 CMD ["java", "-jar", "/root/kangaroo-server-authz.jar"]
 
 # Executable
-ARG version=1.1.0
+ARG version=1.2.0
 ADD https://repo.maven.apache.org/maven2/net/krotscheck/kangaroo-server-authz/${version}/kangaroo-server-authz-${version}-jar-with-dependencies.jar kangaroo-server-authz.jar
