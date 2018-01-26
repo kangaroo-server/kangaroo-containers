@@ -112,4 +112,16 @@ pipeline {
             }
         }
     }
+
+    post {
+
+        /**
+         * When the build status changed, send the result.
+         */
+        changed {
+            script {
+                notifySlack(currentBuild.currentResult)
+            }
+        }
+    }
 }
