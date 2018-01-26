@@ -1,0 +1,23 @@
+FROM resin/rpi-raspbian:jessie
+
+RUN apt-get -y update && \
+    apt-get -y dist-upgrade && \
+    apt-get install -y openjdk-8-jre && \
+    apt-get -y autoremove
+
+# Port bindings
+ENV kangaroo.port=8080
+ENV kangaroo.host=0.0.0.0
+
+# Volume construction
+CMD mkdir -p /var/lib/kangaroo
+VOLUME /var/lib/kangaroo
+
+# Runtime environment
+EXPOSE 8080
+WORKDIR /root
+CMD ["java", "-jar", "/root/kangaroo-server-authz.jar"]
+
+# Executable
+ARG KANGAROO_VERSION=1.2.1
+ADD https://repo.maven.apache.org/maven2/net/krotscheck/kangaroo-server-authz/${KANGAROO_VERSION}/kangaroo-server-authz-${KANGAROO_VERSION}-jar-with-dependencies.jar kangaroo-server-authz.jar
