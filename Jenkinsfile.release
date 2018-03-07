@@ -7,8 +7,8 @@
 def versionLatest = getLatestReleaseVersion("net.krotscheck", "kangaroo-server-authz")
 
 /**
- * Jenkins build pipeline for the kangaroo-container project. The initial run of
- * this is on master - actual container builds are done on the appropriate host OS.
+ * Jenkins release pipeline for the kangaroo-container project. The trigger for this one needs to be manually
+ * configured, as the URLtrigger doesn't yet support the pipeline DSL.
  */
 pipeline {
 
@@ -27,10 +27,15 @@ pipeline {
                     docker.withRegistry('https://index.docker.io/v1/', 'krotscheck_docker_hub') {
                         def args = " . --build-arg KANGAROO_VERSION=${versionLatest} -f authz/Dockerfile.alpine --pull"
 
-                        docker.build("krotscheck/kangaroo-authz:latest", args)
-                        docker.build("krotscheck/kangaroo-authz:${versionLatest}", args)
-                        docker.build("krotscheck/kangaroo-authz:latest-alpine", args)
-                        docker.build("krotscheck/kangaroo-authz:${versionLatest}-alpine", args)
+                        def latest = docker.build("krotscheck/kangaroo-authz:latest", args)
+                        def latestVersioned = docker.build("krotscheck/kangaroo-authz:${versionLatest}", args)
+                        def alpine = docker.build("krotscheck/kangaroo-authz:latest-alpine", args)
+                        def alpineVersioned = docker.build("krotscheck/kangaroo-authz:${versionLatest}-alpine", args)
+
+                        latest.push()
+                        latestVersioned.push()
+                        alpine.push()
+                        alpineVersioned.push()
                     }
                 }
             }
@@ -43,8 +48,11 @@ pipeline {
                     docker.withRegistry('https://index.docker.io/v1/', 'krotscheck_docker_hub') {
                         def args = " . --build-arg KANGAROO_VERSION=${versionLatest} -f authz/Dockerfile.stretch --pull"
 
-                        docker.build("krotscheck/kangaroo-authz:latest-stretch", args)
-                        docker.build("krotscheck/kangaroo-authz:${versionLatest}-stretch", args)
+                        def stretch = docker.build("krotscheck/kangaroo-authz:latest-stretch", args)
+                        def stretchVersioned = docker.build("krotscheck/kangaroo-authz:${versionLatest}-stretch", args)
+
+                        stretch.push()
+                        stretchVersioned.push()
                     }
                 }
             }
@@ -57,8 +65,11 @@ pipeline {
                     docker.withRegistry('https://index.docker.io/v1/', 'krotscheck_docker_hub') {
                         def args = " . --build-arg KANGAROO_VERSION=${versionLatest} -f authz/Dockerfile.raspbian --pull"
 
-                        docker.build("krotscheck/kangaroo-authz:latest-raspbian", args)
-                        docker.build("krotscheck/kangaroo-authz:${versionLatest}-raspbian", args)
+                        def raspbian = docker.build("krotscheck/kangaroo-authz:latest-raspbian", args)
+                        def raspbianVersioned = docker.build("krotscheck/kangaroo-authz:${versionLatest}-raspbian", args)
+
+                        raspbian.push()
+                        raspbianVersioned.push()
                     }
                 }
             }
