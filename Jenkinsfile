@@ -21,7 +21,7 @@ pipeline {
     stages {
 
         stage('Default') {
-            agent { label 'ubuntu' }
+            agent { label 'worker' }
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', 'krotscheck_docker_hub') {
@@ -37,7 +37,7 @@ pipeline {
         }
 
         stage('Stretch') {
-            agent { label 'ubuntu' }
+            agent { label 'worker' }
             steps {
                 script {
                     docker.withRegistry('https://index.docker.io/v1/', 'krotscheck_docker_hub') {
